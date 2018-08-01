@@ -18,16 +18,14 @@ public:
 private slots:
     void on_pushButton_clicked();
 
-    void on_tableWidget_cellActivated(int row, int column);
-
 private:
     Ui::MainWindow *ui;
-    enum Columna
+    enum Column
     {
-     NOMBRE,
-     EDAD,
-     SALARIO
+     FILEPATH,
+     SEPARATOR
     };
+    void generate_table(QString filepath, QChar separator);
 };
 
 #endif // MAINWINDOW_H

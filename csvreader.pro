@@ -26,13 +26,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    personadialog.cpp
+    csvdialog.cpp
 
 HEADERS += \
         mainwindow.h \
     csvreader.h \
-    personadialog.h
+    csvdialog.h
 
 FORMS += \
         mainwindow.ui \
-    personadialog.ui
+    csvdialog.ui
+CONFIG += c++11
