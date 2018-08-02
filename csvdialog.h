@@ -16,7 +16,7 @@ public:
     ~CsvDialog();
 
     QString filepath() const;
-    QChar separator() const;
+    char separator() const;
 
 private slots:
     void on_buttonBox_accepted();

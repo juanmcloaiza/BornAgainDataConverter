@@ -23,7 +23,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     QString csvFile;
-    QChar csvSeparator;
+    char csvSeparator;
     CsvDialog csvd(this);
     csvd.setWindowTitle("Input File Details");
     int res = csvd.exec();
@@ -33,37 +33,23 @@ void MainWindow::on_pushButton_clicked()
     csvSeparator = csvd.separator();
     MainWindow::generate_table(csvFile, csvSeparator);
 }
-//void MainWindow::on_pushButton_clicked()
-//{
-//    double salario;
-//    int res, edad, fila;
-//    QString nombre;
-//    CsvDialog pd(this);
-//    pd.setWindowTitle("Captura de Empleado");
-//    res = pd.exec();
-//    if(res == QDialog::Rejected)
-//        return;
-//    nombre = pd.nombre();
-//    edad = pd.edad();
-//    salario = pd.salario();
-//    ui->tableWidget->insertRow(ui->tableWidget->rowCount());
-//    fila = ui->tableWidget->rowCount()-1;
-//    ui->tableWidget->setItem(fila,NOMBRE,new QTableWidgetItem(nombre));
-//    ui->tableWidget->setItem(fila,EDAD,new QTableWidgetItem(QString::number(edad)));
-//    ui->tableWidget->setItem(fila,SALARIO,new QTableWidgetItem(QString::number(salario)));
+
+void MainWindow::on_pushButton2_clicked()
+{
+    MainWindow::convert_table();
+}
 
 
-//}
 
 
-void MainWindow::generate_table(QString filepath, QChar separator)
+void MainWindow::generate_table(QString filepath, char separator)
 {
     std::ifstream       file(filepath.toStdString());
     QStringList titulos;
-    for(CSVIterator loop(file); loop != CSVIterator(); ++loop){
+    for(CSVIterator loop(file, separator); loop != CSVIterator(); ++loop){
         ui->tableWidget->setColumnCount(loop->size());
 
-        for(int j = 0; j < loop->size(); j++){
+        for(uint j = 0; j < loop->size(); j++){
             titulos << QString::fromStdString((*loop)[j]);
         }
         break;
@@ -80,12 +66,11 @@ void MainWindow::generate_table(QString filepath, QChar separator)
 
         int i =0;
 
-        for(CSVIterator loop(file); loop != CSVIterator(); ++loop)
+        for(CSVIterator loop(file, separator); loop != CSVIterator(); ++loop)
         {
-            int j = 0;
             ui->tableWidget->insertRow(ui->tableWidget->rowCount());
             fila = ui->tableWidget->rowCount()-1;
-            for(int j = 0; j < loop->size(); j++){
+            for(uint j = 0; j < loop->size(); j++){
             //std::cout << "4th Element(" << (*loop)[3] << ")\n";
 
 
@@ -98,3 +83,17 @@ void MainWindow::generate_table(QString filepath, QChar separator)
         cout << e.what() << endl;
     }
 }
+
+void MainWindow::convert_table(){
+    int nRows = ui->tableWidget->rowCount();
+    int nCols = ui->tableWidget->columnCount();
+    for(int i = 0; i < nRows; i++){
+        for(int j = 0; j < nCols; j++){
+             QString newval = QString::fromStdString(std::to_string(2 * ui->tableWidget->item(i,j)->text().toInt()));
+             ui->tableWidget->setItem(i,j,new QTableWidgetItem(newval));
+        }
+    }
+}
+
+
+

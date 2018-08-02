@@ -18,6 +18,8 @@ public:
 private slots:
     void on_pushButton_clicked();
 
+    void on_pushButton2_clicked();
+
 private:
     Ui::MainWindow *ui;
     enum Column
@@ -25,7 +27,8 @@ private:
      FILEPATH,
      SEPARATOR
     };
-    void generate_table(QString filepath, QChar separator);
+    void generate_table(QString filepath, char separator);
+    void convert_table();
 };
 
 #endif // MAINWINDOW_H

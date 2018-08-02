@@ -27,6 +27,6 @@ QString CsvDialog::filepath() const{
     return ui->filepathField->text();
 }
 
-QChar CsvDialog::separator() const{
-    return ui->separatorField->text().at(0);
+char CsvDialog::separator() const{
+    return ui->separatorField->text().at(0).toLatin1();
 }

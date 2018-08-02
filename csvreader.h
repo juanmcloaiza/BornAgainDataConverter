@@ -25,7 +25,7 @@ class CSVRow
             std::string         cell;
 
             m_data.clear();
-            while(std::getline(lineStream, cell, ','))
+            while(std::getline(lineStream, cell, separator))
             {
                 m_data.push_back(cell);
             }
@@ -36,8 +36,19 @@ class CSVRow
                 m_data.push_back("");
             }
         }
+
+        void setSeparator(char sep){
+            this->separator = sep;
+            return;
+        }
+
+        char getSeparator(){
+            return this->separator;
+        }
+
     private:
         std::vector<std::string>    m_data;
+        char separator = '-';
 };
 
 std::istream& operator>>(std::istream& str, CSVRow& data)
@@ -55,11 +66,11 @@ class CSVIterator
         typedef CSVRow*                     pointer;
         typedef CSVRow&                     reference;
 
-        CSVIterator(std::istream& str)  :m_str(str.good()?&str:NULL) { ++(*this); }
+        CSVIterator(std::istream& str, char sep)  :m_str( str.good() ? &str : NULL ) {m_sep=sep; ++(*this); }
         CSVIterator()                   :m_str(NULL) {}
 
         // Pre Increment
-        CSVIterator& operator++()               {if (m_str) { if (!((*m_str) >> m_row)){m_str = NULL;}}return *this;}
+        CSVIterator& operator++()               {if (m_str) { m_row.setSeparator(m_sep); if (!((*m_str) >> m_row)){m_str = NULL;}}return *this;}
         // Post increment
         CSVIterator operator++(int)             {CSVIterator    tmp(*this);++(*this);return tmp;}
         CSVRow const& operator*()   const       {return m_row;}
@@ -70,4 +81,5 @@ class CSVIterator
     private:
         std::istream*       m_str;
         CSVRow              m_row;
+        char                m_sep;
 };
