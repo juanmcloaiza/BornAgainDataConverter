@@ -17,6 +17,9 @@ public:
 
     QString filepath() const;
     char separator() const;
+    uint firstLine() const;
+    uint lastLine() const;
+
 
 private slots:
     void on_buttonBox_accepted();

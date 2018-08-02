@@ -20,6 +20,8 @@ private slots:
 
     void on_pushButton2_clicked();
 
+    void on_removeBlankColsButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     enum Column
@@ -27,8 +29,11 @@ private:
      FILEPATH,
      SEPARATOR
     };
-    void generate_table(QString filepath, char separator);
+
+    void generate_table(QString filepath, char separator, int rowsToSkipAtStart, int rowsToSkipAtEnd);
     void convert_table();
+    void remove_blanks();
+    bool cell_is_blank(int iRow, int jCol);
 };
 
 #endif // MAINWINDOW_H

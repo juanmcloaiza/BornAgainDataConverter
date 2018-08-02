@@ -30,3 +30,11 @@ QString CsvDialog::filepath() const{
 char CsvDialog::separator() const{
     return ui->separatorField->text().at(0).toLatin1();
 }
+
+uint CsvDialog::firstLine() const{
+    return ui->skipAtStartSpinBox->value();
+}
+
+uint CsvDialog::lastLine() const{
+    return ui->skipAtEndSpinBox->value();
+}
