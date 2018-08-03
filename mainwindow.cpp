@@ -3,6 +3,7 @@
 #include "csvreader.h"
 #include "csvdialog.h"
 #include <iostream>
+#include <QMessageBox>
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -20,48 +21,45 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_openButton_clicked()
 {
-	QString csvFile;
-	QString csvSeparator;
 	CsvDialog csvd(this);
 	csvd.setWindowTitle("Input File Details");
 	int res = csvd.exec();
 	if(res == QDialog::Rejected)
 		return;
-	csvFile = csvd.filepath();
-	csvSeparator = csvd.separator();
-	MainWindow::generate_table(csvd.filepath(), csvd.separator(), csvd.firstLine(), csvd.lastLine());
+
+    MainWindow::generate_table(csvd.filepath(), csvd.separator(), csvd.headersLine(), csvd.firstLine(), csvd.lastLine());
+    MainWindow::remove_blanks();
 }
 
-void MainWindow::on_pushButton2_clicked()
+void MainWindow::on_exportButton_clicked()
 {
 	MainWindow::convert_table();
 }
 
-void MainWindow::on_removeBlankColsButton_clicked()
-{
-	MainWindow::remove_blanks();
-}
-
-
-
-void MainWindow::generate_table(QString filepath, char separator, int firstLine, int lastLine)
+void MainWindow::generate_table(QString filepath, char separator, int headersLine, int firstLine, int lastLine)
 {
 	std::ifstream file(filepath.toStdString());
 	QStringList titulos;
 	int currentLine = 0;
 	for(CSVIterator loop(file, separator); loop != CSVIterator(); ++loop){
 		currentLine++;
+
+        if(currentLine == headersLine){
+            titulos.clear();
+            for(uint j = 0; j < loop->size(); j++)
+                titulos << QString::fromStdString((*loop)[j]);
+        }
+
 		if(currentLine <= firstLine)
 			continue;
 
 		ui->tableWidget->setColumnCount(loop->size());
-		for(uint j = 0; j < loop->size(); j++){
+        for(uint j = titulos.size(); j < loop->size(); j++){
 			//titulos << QString::fromStdString((*loop)[j]);
-			titulos << QString::fromStdString(std::string("Column ") + std::to_string(j) );
+            titulos << QString::fromStdString(std::string("Column ") + std::to_string(j+1) );
 		}
-
 		break;
 	}
 	ui->tableWidget->clearContents();

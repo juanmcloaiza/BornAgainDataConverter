@@ -17,6 +17,7 @@ public:
 
     QString filepath() const;
     char separator() const;
+    uint headersLine() const;
     uint firstLine() const;
     uint lastLine() const;
 
@@ -25,6 +26,8 @@ private slots:
     void on_buttonBox_accepted();
 
     void on_buttonBox_rejected();
+
+    void on_browseButton_clicked();
 
 private:
     Ui::CsvDialog *ui;

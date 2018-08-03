@@ -38,21 +38,14 @@
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="openButton">
         <property name="text">
          <string>Read CSV</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="removeBlankColsButton">
-        <property name="text">
-         <string>Remove Blank Columns</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton2">
+       <widget class="QPushButton" name="exportButton">
         <property name="text">
          <string>Export</string>
         </property>

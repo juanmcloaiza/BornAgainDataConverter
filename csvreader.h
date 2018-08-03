@@ -20,6 +20,7 @@ class CSVRow
         {
             std::string         line;
             std::getline(str, line);
+            std::replace(std::begin(line),std::end(line),'\t',' ');
 
             std::stringstream   lineStream(line);
             std::string         cell;

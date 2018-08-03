@@ -16,11 +16,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
+    void on_openButton_clicked();
 
-    void on_pushButton2_clicked();
-
-    void on_removeBlankColsButton_clicked();
+    void on_exportButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -30,7 +28,7 @@ private:
      SEPARATOR
     };
 
-    void generate_table(QString filepath, char separator, int rowsToSkipAtStart, int rowsToSkipAtEnd);
+    void generate_table(QString filepath, char separator, int headersLine, int firstLine, int lastLine);
     void convert_table();
     void remove_blanks();
     bool cell_is_blank(int iRow, int jCol);

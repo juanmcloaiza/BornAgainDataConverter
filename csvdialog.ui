@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>362</width>
-    <height>140</height>
+    <width>288</width>
+    <height>167</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,14 @@
      <item>
       <widget class="QLineEdit" name="filepathField">
        <property name="text">
-        <string>/home/juan/Github/csvreader/gisas_test.int</string>
+        <string>/home/juan/Github/csvreader/mg6a_Merged.txt</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="browseButton">
+       <property name="text">
+        <string>Browse</string>
        </property>
       </widget>
      </item>
@@ -54,16 +61,37 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Line to start reading:</string>
+        <string>Headers row (zero for no headers):</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="skipAtStartSpinBox">
+      <widget class="QSpinBox" name="headersRowSpinBox">
+       <property name="minimum">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>First data row:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="firstDataRowSpinBox">
+       <property name="minimum">
+        <number>1</number>
+       </property>
        <property name="value">
         <number>11</number>
        </property>
@@ -76,12 +104,12 @@
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Line to stop reading (zero to read till the end):</string>
+        <string>Last data row (zero for last line found):</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="skipAtEndSpinBox"/>
+      <widget class="QSpinBox" name="lastDataRowSpinBox"/>
      </item>
     </layout>
    </item>
