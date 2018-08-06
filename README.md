@@ -1,7 +1,7 @@
 # CsvToQtTableWidget
 The aim is to parse a char-separated-values file into a QtTableWidget
 1. click "Read CSV"
-2. Fill the required fields
+2. Fill the required fields on the pop-up dialog
 3. See the data in the QtTableWidget
-4. Blank Columns to remove? Click on Remove Blank Columns
+4. Export your table to <html><a href="http://www.bornagainproject.org/" target="_blank">BornAgain</a></html> --To be implemented.
 ![alt text](https://raw.githubusercontent.com/juanmcloaiza/CsvToQtTableWidget/develop/screenshot.png)
