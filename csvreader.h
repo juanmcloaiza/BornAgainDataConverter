@@ -6,54 +6,23 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <string>
+#include <algorithm>
 
 class CSVRow
 {
     public:
-        std::string const& operator[](std::size_t index) const
-        {
-            return m_data[index];
-        }
-        std::size_t size() const
-        {
-            return m_data.size();
-        }
-        void readNextRow(std::istream& str)
-        {
-            std::string         line;
-            std::getline(str, line);
-            std::replace(std::begin(line),std::end(line),'\t',' ');
+        std::string const& operator[](std::size_t index) const;
 
-            std::stringstream   lineStream(line);
-            std::string         cell;
+        std::size_t size() const;
 
-            m_data.clear();
-            while(std::getline(lineStream, cell, separator))
-            {
-                m_data.push_back(cell);
-            }
-            // This checks for a trailing comma with no data after it.
-            if (!lineStream && cell.empty())
-            {
-                // If there was a trailing comma then add an empty element.
-                m_data.push_back("");
-            }
-        }
+        void readNextRow(std::istream& str);
 
-        void setSeparator(char sep){
-            this->separator = sep;
-            return;
-        }
 
-        char getSeparator(){
-            return this->separator;
-        }
+        void setSeparator(char sep);
 
-        void addCell(std::string str){
-            m_data.push_back(str);
-        }
+        char getSeparator();
 
+        void addCell(std::string str);
 
     private:
         std::vector<std::string>    m_data;
@@ -109,65 +78,25 @@ class CSVFile
             EqualizeRowLengths();
         }
 
-        void Read()
-        {
-           try{
-               std::ifstream file(filepath);
-               for(CSVIterator loop(file, separator); loop != CSVIterator(); ++loop){
-                   rows.push_back((*loop));
-                   numberOfColumns = (*loop).size() > numberOfColumns ? (*loop).size() : numberOfColumns;
-               }
-            }catch(const std::exception& e){
-               std::cout << e.what() << std::endl;
-           }
-        }
-
-        void EqualizeRowLengths()
-        {
-            for(uint i = 0; i < NumberOfRows(); i++){
-                while(rows[i].size() < NumberOfColumns()) {
-                    rows[i].addCell("");
-                }
-            }
-
-        }
+        void Read();
 
 
-        CSVRow const operator[](std::size_t index_i) const
-        {
-            return rows[index_i];
-        }
+        void EqualizeRowLengths();
 
-        std::size_t NumberOfRows() const
-        {
-            return rows.size();
-        }
 
-        std::size_t NumberOfColumns() const
-        {
-            return this->numberOfColumns;
-        }
+        CSVRow const operator[](std::size_t index_i) const;
 
-        void set_separator(char sep){
-            this->separator = sep;
-            return;
-        }
+        std::size_t NumberOfRows() const;
 
-        char get_separator(){
-            return this->separator;
-        }
+        std::size_t NumberOfColumns() const;
 
-        CSVRow get_headers(){
-            if(headersRow > 0){
-                return this->rows[headersRow-1];
-            }else{
-                return CSVRow();
-            }
-        }
+        void set_separator(char sep);
 
-        CSVRow get_row(int i){
-            return this->rows[i];
-        }
+        char get_separator();
+
+        CSVRow get_headers();
+
+        CSVRow get_row(int i);
 
     private:
         std::string filepath;

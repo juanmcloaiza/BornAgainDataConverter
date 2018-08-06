@@ -26,7 +26,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    csvdialog.cpp
+    csvdialog.cpp \
+    csvreader.cpp
 
 HEADERS += \
         mainwindow.h \

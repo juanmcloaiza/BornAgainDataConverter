@@ -28,7 +28,6 @@ void MainWindow::on_openButton_clicked()
 		return;
 
     MainWindow::generate_table(&csvd);
-    MainWindow::remove_blanks();
 }
 
 void MainWindow::on_exportButton_clicked()
@@ -57,7 +56,7 @@ void MainWindow::set_table_headers(CSVFile* csvFile){
     CSVRow headers = csvFile->get_headers();
 
     for(uint j = 0; j < headers.size(); j++){
-        std::string header = headers[j] == "" ? std::string("Column ") + std::to_string(j+1) : headers[j];
+        std::string header = headers[j].empty() ? std::string("Column ") + std::to_string(j+1) : headers[j];
         titulos << QString::fromStdString(header);
     }
     ui->tableWidget->setHorizontalHeaderLabels(titulos);
@@ -73,7 +72,6 @@ void MainWindow::set_table_data(CSVFile* csvFile, CsvDialog* csvd){
     for(uint i = firstDataLine; i < lastDataLine; i++){
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         uint I = ui->tableWidget->rowCount() - 1;
-        cout << "I = " << I << "; " << "i = " << i << endl;
         for(uint j = 0; j < csvFile->NumberOfColumns(); j++){
            std::string aasdf = csvFile->operator [](i)[j];
            ui->tableWidget->setItem(I,j,new QTableWidgetItem(QString::fromStdString(aasdf)));
