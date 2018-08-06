@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "csvdialog.h"
+#include "csvreader.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,7 +30,11 @@ private:
      SEPARATOR
     };
 
-    void generate_table(QString filepath, char separator, int headersLine, int firstLine, int lastLine);
+    void generate_table(CsvDialog *csvd);
+
+
+    void set_table_headers(CSVFile *csvFile);
+    void set_table_data(CSVFile *csvFile, CsvDialog *csvd);
     void convert_table();
     void remove_blanks();
     bool cell_is_blank(int iRow, int jCol);

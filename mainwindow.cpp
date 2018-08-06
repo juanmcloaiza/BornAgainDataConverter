@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "csvreader.h"
-#include "csvdialog.h"
 #include <iostream>
 #include <QMessageBox>
 using namespace std;
@@ -29,7 +27,7 @@ void MainWindow::on_openButton_clicked()
 	if(res == QDialog::Rejected)
 		return;
 
-    MainWindow::generate_table(csvd.filepath(), csvd.separator(), csvd.headersLine(), csvd.firstLine(), csvd.lastLine());
+    MainWindow::generate_table(&csvd);
     MainWindow::remove_blanks();
 }
 
@@ -38,73 +36,49 @@ void MainWindow::on_exportButton_clicked()
 	MainWindow::convert_table();
 }
 
-void MainWindow::generate_table(QString filepath, char separator, int headersLine, int firstLine, int lastLine)
+void MainWindow::generate_table(CsvDialog* csvd)
 {
-	std::ifstream file(filepath.toStdString());
-	QStringList titulos;
-	int currentLine = 0;
-	for(CSVIterator loop(file, separator); loop != CSVIterator(); ++loop){
-		currentLine++;
+    CSVFile csvFile(csvd->filepath().toStdString(), csvd->separator(), csvd->headersLine());
 
-        if(currentLine == headersLine){
-            titulos.clear();
-            for(uint j = 0; j < loop->size(); j++)
-                titulos << QString::fromStdString((*loop)[j]);
-        }
+    ui->tableWidget->clearContents();
+    ui->tableWidget->setColumnCount(csvFile.NumberOfColumns());
+    ui->tableWidget->setRowCount(0);
 
-		if(currentLine <= firstLine)
-			continue;
+    set_table_headers(&csvFile);
+    set_table_data(&csvFile,csvd);
+    remove_blanks();
 
-		ui->tableWidget->setColumnCount(loop->size());
-        for(uint j = titulos.size(); j < loop->size(); j++){
-			//titulos << QString::fromStdString((*loop)[j]);
-            titulos << QString::fromStdString(std::string("Column ") + std::to_string(j+1) );
-		}
-		break;
-	}
-	ui->tableWidget->clearContents();
-	ui->tableWidget->setRowCount(0);
-	ui->tableWidget->setHorizontalHeaderLabels(titulos);
-	int fila = 0;
-
-	try{
-		cout << "Hello" << endl;
-		std::ifstream file(filepath.toStdString());
-
-		int i =0;
-		currentLine = 0;
-		for(CSVIterator loop(file, separator); loop != CSVIterator(); ++loop)
-		{
-			currentLine++;
-			if(currentLine < firstLine)
-				continue;
-			if (lastLine > 0)
-                if(currentLine > lastLine)
-					break;
-
-
-			ui->tableWidget->insertRow(ui->tableWidget->rowCount());
-			fila = ui->tableWidget->rowCount()-1;
-			for(uint j = 0; j < loop->size(); j++){
-				ui->tableWidget->setItem(fila,j,new QTableWidgetItem(QString::fromStdString((*loop)[j])));
-			}
-			i++;
-		}
-
-	}catch(const std::exception& e){
-		cout << e.what() << endl;
-	}
+    return;
 }
 
-void MainWindow::convert_table(){
-	int nRows = ui->tableWidget->rowCount();
-	int nCols = ui->tableWidget->columnCount();
-	for(int i = 0; i < nRows; i++){
-		for(int j = 0; j < nCols; j++){
-			QString newval = QString::fromStdString(std::to_string(2 * ui->tableWidget->item(i,j)->text().toInt()));
-			ui->tableWidget->setItem(i,j,new QTableWidgetItem(newval));
-		}
-	}
+void MainWindow::set_table_headers(CSVFile* csvFile){
+    QStringList titulos;
+
+    CSVRow headers = csvFile->get_headers();
+
+    for(uint j = 0; j < headers.size(); j++){
+        std::string header = headers[j] == "" ? std::string("Column ") + std::to_string(j+1) : headers[j];
+        titulos << QString::fromStdString(header);
+    }
+    ui->tableWidget->setHorizontalHeaderLabels(titulos);
+    return;
+}
+
+
+void MainWindow::set_table_data(CSVFile* csvFile, CsvDialog* csvd){
+
+    uint firstDataLine = csvd->firstLine() - 1;
+    uint lastDataLine = csvd->lastLine() == 0 ? csvFile->NumberOfRows() : csvd->lastLine();
+
+    for(uint i = firstDataLine; i < lastDataLine; i++){
+        ui->tableWidget->insertRow(ui->tableWidget->rowCount());
+        uint I = ui->tableWidget->rowCount() - 1;
+        cout << "I = " << I << "; " << "i = " << i << endl;
+        for(uint j = 0; j < csvFile->NumberOfColumns(); j++){
+           std::string aasdf = csvFile->operator [](i)[j];
+           ui->tableWidget->setItem(I,j,new QTableWidgetItem(QString::fromStdString(aasdf)));
+        }
+    }
 }
 
 void MainWindow::remove_blanks(){
@@ -132,10 +106,8 @@ void MainWindow::remove_blanks(){
         B.clear();
         for(int j = 0; j < nCols; j++){
            B.push_back( ui->tableWidget->item(i,j) != NULL ? ui->tableWidget->item(i,j)->text().toStdString() : "");
-            cout<<B.back();
         }
         A.push_back(B);
-        cout<<A[i].back();
     }
 
     //put them into a new table
@@ -156,12 +128,22 @@ void MainWindow::remove_blanks(){
     }
 
 
-//    for(uint j = 0; j < blank_cols.size() ;j++)
-//        std::cout << blank_cols[j] << endl;
 
-    cout << "finished" << endl;
+    cout << "finished removing blanks" << endl;
 
 }
+
+void MainWindow::convert_table(){
+    int nRows = ui->tableWidget->rowCount();
+    int nCols = ui->tableWidget->columnCount();
+    for(int i = 0; i < nRows; i++){
+        for(int j = 0; j < nCols; j++){
+            QString newval = QString::fromStdString(std::to_string(2 * ui->tableWidget->item(i,j)->text().toInt()));
+            ui->tableWidget->setItem(i,j,new QTableWidgetItem(newval));
+        }
+    }
+}
+
 
 bool MainWindow::cell_is_blank(int iRow, int jCol){
 

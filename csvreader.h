@@ -1,3 +1,6 @@
+#ifndef CSVREADER_H
+#define CSVREADER_H
+
 #include <iterator>
 #include <iostream>
 #include <fstream>
@@ -47,17 +50,22 @@ class CSVRow
             return this->separator;
         }
 
+        void addCell(std::string str){
+            m_data.push_back(str);
+        }
+
+
     private:
         std::vector<std::string>    m_data;
         char separator = '-';
 };
 
-std::istream& operator>>(std::istream& str, CSVRow& data)
+inline std::istream& operator>>(std::istream& str, CSVRow& data)
 {
     data.readNextRow(str);
     return str;
 }
-//////////////////////////////////
+
 class CSVIterator
 {
     public:
@@ -79,8 +87,95 @@ class CSVIterator
 
         bool operator==(CSVIterator const& rhs) {return ((this == &rhs) || ((this->m_str == NULL) && (rhs.m_str == NULL)));}
         bool operator!=(CSVIterator const& rhs) {return !((*this) == rhs);}
+
+
+
     private:
         std::istream*       m_str;
         CSVRow              m_row;
         char                m_sep;
 };
+
+class CSVFile
+{
+    public:
+        CSVFile(std::string path_to_file): filepath(path_to_file), separator('-'), headersRow(0) {Init();}
+        CSVFile(std::string path_to_file, char sep): filepath(path_to_file), separator(sep), headersRow(0) {Init();}
+        CSVFile(std::string path_to_file, char sep, uint headRow): filepath(path_to_file), separator(sep), headersRow(headRow) {Init();}
+
+
+        void Init(){
+            Read();
+            EqualizeRowLengths();
+        }
+
+        void Read()
+        {
+           try{
+               std::ifstream file(filepath);
+               for(CSVIterator loop(file, separator); loop != CSVIterator(); ++loop){
+                   rows.push_back((*loop));
+                   numberOfColumns = (*loop).size() > numberOfColumns ? (*loop).size() : numberOfColumns;
+               }
+            }catch(const std::exception& e){
+               std::cout << e.what() << std::endl;
+           }
+        }
+
+        void EqualizeRowLengths()
+        {
+            for(uint i = 0; i < NumberOfRows(); i++){
+                while(rows[i].size() < NumberOfColumns()) {
+                    rows[i].addCell("");
+                }
+            }
+
+        }
+
+
+        CSVRow const operator[](std::size_t index_i) const
+        {
+            return rows[index_i];
+        }
+
+        std::size_t NumberOfRows() const
+        {
+            return rows.size();
+        }
+
+        std::size_t NumberOfColumns() const
+        {
+            return this->numberOfColumns;
+        }
+
+        void set_separator(char sep){
+            this->separator = sep;
+            return;
+        }
+
+        char get_separator(){
+            return this->separator;
+        }
+
+        CSVRow get_headers(){
+            if(headersRow > 0){
+                return this->rows[headersRow-1];
+            }else{
+                return CSVRow();
+            }
+        }
+
+        CSVRow get_row(int i){
+            return this->rows[i];
+        }
+
+    private:
+        std::string filepath;
+        char separator = '-';
+        uint headersRow = 0;
+        uint numberOfColumns = 0;
+        std::vector<CSVRow>    rows;
+
+};
+
+#endif // CSVREADER_H
