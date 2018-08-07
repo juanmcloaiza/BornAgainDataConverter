@@ -1,5 +1,5 @@
-# CsvToQtTableWidget
-The aim is to parse a char-separated-values file into a QtTableWidget
+# BornAgainDataConverter
+Reads a CSV (as in "character-separated-value") file and writes a BornAgain int output file.
 1. click "Read CSV"
 2. Fill the required fields on the pop-up dialog
 3. See the data in the QtTableWidget
